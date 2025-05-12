@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
-  signup(createUserDto: CreateUserDto) {
-    console.log('Creating user:', createUserDto);
-    throw new Error('Method not implemented.');
+  constructor(private readonly userService: UserService) {}
+
+  async signup(createUserDto: CreateUserDto) {
+    const user = await this.userService.findByEmail(createUserDto.email);
+
+    if (user) throw new ConflictException('User already exists');
+
+    return this.userService.create(createUserDto);
   }
 }
