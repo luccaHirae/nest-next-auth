@@ -1,7 +1,8 @@
+import { SubmitButton } from '@/components/submit-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function SignUpForm() {
+export function SignUpForm() {
   return (
     <form>
       <div className='flex flex-col gap-2'>
@@ -24,6 +25,8 @@ export default function SignUpForm() {
             placeholder='********'
           />
         </div>
+
+        <SubmitButton className='mt-2'>Sign Up</SubmitButton>
       </div>
     </form>
   );
