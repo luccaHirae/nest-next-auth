@@ -26,3 +26,11 @@ export const SignupFormSchema = z.object({
     })
     .trim(),
 });
+
+export const SigninFormSchema = z.object({
+  email: z
+    .string()
+    .email({ message: 'Please enter a valid email address.' })
+    .trim(),
+  password: z.string().min(1, { message: 'Password is required.' }).trim(),
+});
