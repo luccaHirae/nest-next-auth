@@ -1,0 +1,4 @@
+export const FORM_VALIDATION = {
+  NAME_LENGTH: 2,
+  PASSWORD_LENGTH: 8,
+};
