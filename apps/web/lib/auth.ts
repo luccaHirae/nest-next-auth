@@ -2,8 +2,9 @@
 
 import { BACKEND_URL } from '@/constants';
 import { SigninFormSchema, SignupFormSchema } from '@/schemas';
-import { FormState } from '@/types';
+import { FormState, Session } from '@/types';
 import { redirect } from 'next/navigation';
+import { createSession } from '@/lib/session';
 
 export async function signup(
   formState: FormState,
@@ -63,10 +64,16 @@ export async function signin(
   });
 
   if (response.ok) {
-    const result = await response.json();
-    console.log('result', result);
+    const result = (await response.json()) as Session['user'];
 
-    // TODO: Store the JWT token in a secure way
+    await createSession({
+      user: {
+        id: result.id,
+        name: result.name,
+      },
+    });
+
+    redirect('/');
   } else {
     return {
       message:

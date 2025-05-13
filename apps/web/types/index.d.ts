@@ -8,3 +8,12 @@ export type FormState =
       message?: string;
     }
   | undefined;
+
+export type Session = {
+  user: {
+    id: string;
+    name: string;
+  };
+  // accessToken: string;
+  // refreshToken: string;
+};
