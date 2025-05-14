@@ -2,7 +2,7 @@
 
 import { BACKEND_URL } from '@/constants';
 import { SigninFormSchema, SignupFormSchema } from '@/schemas';
-import { FormState, Session } from '@/types';
+import { FormState, SigninResponse } from '@/types';
 import { redirect } from 'next/navigation';
 import { createSession } from '@/lib/session';
 
@@ -64,13 +64,14 @@ export async function signin(
   });
 
   if (response.ok) {
-    const result = (await response.json()) as Session['user'];
+    const result = (await response.json()) as SigninResponse;
 
     await createSession({
       user: {
         id: result.id,
         name: result.name,
       },
+      accessToken: result.accessToken,
     });
 
     redirect('/');

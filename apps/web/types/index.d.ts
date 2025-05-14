@@ -11,9 +11,16 @@ export type FormState =
 
 export type Session = {
   user: {
-    id: string;
+    id: number;
     name: string;
   };
-  // accessToken: string;
+  accessToken: string;
+  // refreshToken: string;
+};
+
+export type SigninResponse = {
+  id: number;
+  name: string;
+  accessToken: string;
   // refreshToken: string;
 };
