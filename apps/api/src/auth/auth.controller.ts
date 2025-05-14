@@ -14,7 +14,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  signin(@Request() request: Request & { user: { id: string; name: string } }) {
-    return request.user;
+  signin(@Request() request: Request & { user: { id: number; name: string } }) {
+    return this.authService.signin(request.user.id, request.user.name);
   }
 }
