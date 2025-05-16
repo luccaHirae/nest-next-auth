@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -39,5 +40,11 @@ export class AuthController {
     return {
       message: `This is your profile. User ID: ${request.user.id}`,
     };
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @Post('refresh')
+  refreshToken(@Request() request: RequestWithUser) {
+    return this.authService.refreshToken(request.user.id, request.user.name);
   }
 }
