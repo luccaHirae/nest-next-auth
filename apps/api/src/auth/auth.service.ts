@@ -77,4 +77,14 @@ export class AuthService {
       id: user.id,
     };
   }
+
+  async validateRefreshToken(id: number) {
+    const user = await this.userService.findOne(id);
+
+    if (!user) throw new UnauthorizedException('User not found');
+
+    return {
+      id: user.id,
+    };
+  }
 }
