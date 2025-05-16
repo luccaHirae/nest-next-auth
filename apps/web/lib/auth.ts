@@ -4,7 +4,7 @@ import { BACKEND_URL } from '@/constants';
 import { SigninFormSchema, SignupFormSchema } from '@/schemas';
 import { FormState, SigninResponse } from '@/types';
 import { redirect } from 'next/navigation';
-import { createSession } from '@/lib/session';
+import { createSession, updateTokens } from '@/lib/session';
 
 export async function signup(
   formState: FormState,
@@ -83,3 +83,28 @@ export async function signin(
     };
   }
 }
+
+export const refreshToken = async (oldRefreshToken: string) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        refreshToken: oldRefreshToken,
+      }),
+    });
+
+    if (!response.ok) throw new Error('Failed to refresh token');
+
+    const { accessToken, refreshToken } = await response.json();
+
+    await updateTokens({ accessToken, refreshToken });
+
+    return accessToken;
+  } catch (err) {
+    console.error('Error refreshing token:', err);
+    return null;
+  }
+};
