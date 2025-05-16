@@ -72,6 +72,7 @@ export async function signin(
         name: result.name,
       },
       accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
     });
 
     redirect('/');

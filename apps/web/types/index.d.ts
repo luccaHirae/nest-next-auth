@@ -15,12 +15,12 @@ export type Session = {
     name: string;
   };
   accessToken: string;
-  // refreshToken: string;
+  refreshToken: string;
 };
 
 export type SigninResponse = {
   id: number;
   name: string;
   accessToken: string;
-  // refreshToken: string;
+  refreshToken: string;
 };
