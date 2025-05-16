@@ -4,7 +4,7 @@ import { BACKEND_URL } from '@/constants';
 import { SigninFormSchema, SignupFormSchema } from '@/schemas';
 import { FormState, SigninResponse } from '@/types';
 import { redirect } from 'next/navigation';
-import { createSession, updateTokens } from '@/lib/session';
+import { createSession } from '@/lib/session';
 
 export async function signup(
   formState: FormState,
@@ -100,7 +100,15 @@ export const refreshToken = async (oldRefreshToken: string) => {
 
     const { accessToken, refreshToken } = await response.json();
 
-    await updateTokens({ accessToken, refreshToken });
+    const updateTokensResponse = await fetch('/api/auth/update', {
+      method: 'POST',
+      body: JSON.stringify({
+        accessToken,
+        refreshToken,
+      }),
+    });
+
+    if (!updateTokensResponse.ok) throw new Error('Failed to update tokens');
 
     return accessToken;
   } catch (err) {

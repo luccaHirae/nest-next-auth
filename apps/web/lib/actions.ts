@@ -1,14 +1,9 @@
 'use server';
 
 import { BACKEND_URL } from '@/constants';
-import { getSession } from '@/lib/session';
+import { authFetch } from '@/lib/auth-fetch';
 
 export const getProfile = async () => {
-  const session = await getSession();
-  const response = await fetch(`${BACKEND_URL}/auth/profile`, {
-    headers: {
-      authorization: `Bearer ${session?.accessToken}`,
-    },
-  });
+  const response = await authFetch(`${BACKEND_URL}/profile`);
   return await response.json();
 };
