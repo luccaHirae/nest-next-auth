@@ -10,6 +10,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import refreshConfig from './config/refresh.config';
 import googleOauthConfig from './config/google-oauth.config';
+import { RefreshTokenJwtStrategy } from './strategies/refresh-token.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import googleOauthConfig from './config/google-oauth.config';
     PrismaService,
     LocalStrategy,
     JwtStrategy,
+    RefreshTokenJwtStrategy,
+    GoogleStrategy,
   ],
 })
 export class AuthModule {}
