@@ -11,6 +11,7 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -47,4 +48,12 @@ export class AuthController {
   refreshToken(@Request() request: RequestWithUser) {
     return this.authService.refreshToken(request.user.id, request.user.name);
   }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  googleLogin() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  googleCallback() {}
 }
