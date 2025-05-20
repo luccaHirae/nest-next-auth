@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { verify } from 'argon2';
+import { hash, verify } from 'argon2';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthJwtPayload } from './types/auth.jwt-payload';
@@ -47,6 +47,9 @@ export class AuthService {
   async signin(id: number, name?: string) {
     const { accessToken, refreshToken } = await this.generateToken(id);
 
+    const hashedRefreshToken = await hash(refreshToken);
+    await this.userService.updateHashedRefreshToken(id, hashedRefreshToken);
+
     return {
       id,
       name,
@@ -78,10 +81,20 @@ export class AuthService {
     };
   }
 
-  async validateRefreshToken(id: number) {
+  async validateRefreshToken(id: number, refreshToken: string) {
     const user = await this.userService.findOne(id);
 
     if (!user) throw new UnauthorizedException('User not found');
+    if (!user.hashedRefreshToken)
+      throw new UnauthorizedException('Refresh token not found');
+
+    const refreshTokenMatches = await verify(
+      user.hashedRefreshToken,
+      refreshToken,
+    );
+
+    if (!refreshTokenMatches)
+      throw new UnauthorizedException('Invalid refresh token');
 
     return {
       id: user.id,
@@ -90,6 +103,9 @@ export class AuthService {
 
   async refreshToken(id: number, name: string) {
     const { accessToken, refreshToken } = await this.generateToken(id);
+
+    const hashedRefreshToken = await hash(refreshToken);
+    await this.userService.updateHashedRefreshToken(id, hashedRefreshToken);
 
     return {
       id,

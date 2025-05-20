@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthJwtPayload } from '../types/auth.jwt-payload';
 import { AuthService } from '../auth.service';
 import refreshConfig from '../config/refresh.config';
+import { Request } from 'express';
 
 @Injectable()
 export class RefreshTokenJwtStrategy extends PassportStrategy(
@@ -18,11 +19,14 @@ export class RefreshTokenJwtStrategy extends PassportStrategy(
       jwtFromRequest: ExtractJwt.fromBodyField('refreshToken'),
       secretOrKey: refreshTokenConfig.secret,
       ignoreExpiration: false,
+      passReqToCallback: true,
     });
   }
 
-  validate(payload: AuthJwtPayload) {
+  validate(req: Request, payload: AuthJwtPayload) {
     const id = payload.sub;
-    return this.authService.validateRefreshToken(id);
+    const { refreshToken } = req.body as { refreshToken: string };
+
+    return this.authService.validateRefreshToken(id, refreshToken);
   }
 }
