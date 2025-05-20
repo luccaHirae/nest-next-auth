@@ -50,7 +50,10 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  async updateHashedRefreshToken(id: number, hashedRefreshToken: string) {
+  async updateHashedRefreshToken(
+    id: number,
+    hashedRefreshToken: string | null,
+  ) {
     return await this.prismaService.user.update({
       where: {
         id,
