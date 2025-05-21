@@ -16,6 +16,8 @@ import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
 import { Public } from './decorators/public.decorator';
 import { Roles } from './decorators/role.decorator';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { RolesGuard } from './guards/roles/roles.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -42,6 +44,8 @@ export class AuthController {
   }
 
   @Roles('ADMIN', 'EDITOR')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() request: RequestWithUser) {
     return {
