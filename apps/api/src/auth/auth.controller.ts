@@ -18,12 +18,10 @@ import { Public } from './decorators/public.decorator';
 import { Roles } from './decorators/role.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guards/roles/roles.guard';
+import { User } from 'generated/prisma';
 
 interface RequestWithUser extends Request {
-  user: {
-    id: number;
-    name: string;
-  };
+  user: User;
 }
 
 @Public()
@@ -40,7 +38,11 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('signin')
   signin(@Request() request: RequestWithUser) {
-    return this.authService.signin(request.user.id, request.user.name);
+    return this.authService.signin(
+      request.user.id,
+      request.user.name,
+      request.user.role,
+    );
   }
 
   @Roles('ADMIN', 'EDITOR')
@@ -75,10 +77,11 @@ export class AuthController {
     const response = await this.authService.signin(
       request.user.id,
       request.user.name,
+      request.user.role,
     );
 
     res.redirect(
-      `${process.env.FRONTEND_URL}/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}`,
+      `${process.env.FRONTEND_URL}/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}&role=${response.role}`,
     );
   }
 

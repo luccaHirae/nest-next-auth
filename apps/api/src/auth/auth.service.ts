@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthJwtPayload } from './types/auth.jwt-payload';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
+import { Role } from 'generated/prisma';
 
 @Injectable()
 export class AuthService {
@@ -45,7 +46,7 @@ export class AuthService {
     };
   }
 
-  async signin(id: number, name?: string) {
+  async signin(id: number, name: string, role: Role) {
     const { accessToken, refreshToken } = await this.generateToken(id);
 
     const hashedRefreshToken = await hash(refreshToken);
@@ -54,6 +55,7 @@ export class AuthService {
     return {
       id,
       name,
+      role,
       accessToken,
       refreshToken,
     };
