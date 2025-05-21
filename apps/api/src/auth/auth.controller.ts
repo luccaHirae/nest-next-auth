@@ -15,6 +15,7 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
 import { Public } from './decorators/public.decorator';
+import { Roles } from './decorators/role.decorator';
 
 interface RequestWithUser extends Request {
   user: {
@@ -40,6 +41,7 @@ export class AuthController {
     return this.authService.signin(request.user.id, request.user.name);
   }
 
+  @Roles('ADMIN', 'EDITOR')
   @Get('profile')
   getProfile(@Request() request: RequestWithUser) {
     return {

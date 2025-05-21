@@ -41,6 +41,7 @@ export class AuthService {
     return {
       id: user.id,
       name: user.name,
+      role: user.role,
     };
   }
 
@@ -78,6 +79,7 @@ export class AuthService {
 
     return {
       id: user.id,
+      role: user.role,
     };
   }
 
