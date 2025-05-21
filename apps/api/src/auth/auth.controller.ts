@@ -11,10 +11,10 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
+import { Public } from './decorators/public.decorator';
 
 interface RequestWithUser extends Request {
   user: {
@@ -23,6 +23,7 @@ interface RequestWithUser extends Request {
   };
 }
 
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -32,13 +33,13 @@ export class AuthController {
     return this.authService.signup(createUserDto);
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('signin')
   signin(@Request() request: RequestWithUser) {
     return this.authService.signin(request.user.id, request.user.name);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() request: RequestWithUser) {
     return {
@@ -46,16 +47,19 @@ export class AuthController {
     };
   }
 
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   refreshToken(@Request() request: RequestWithUser) {
     return this.authService.refreshToken(request.user.id, request.user.name);
   }
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   googleLogin() {}
 
+  @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(
@@ -72,7 +76,6 @@ export class AuthController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('signout')
   signout(@Req() req: RequestWithUser) {
     return this.authService.signout(req.user.id);
